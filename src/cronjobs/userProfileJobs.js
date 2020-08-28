@@ -3,19 +3,19 @@ import { CronJob } from 'cron';
 const userhelper = require('../helpers/userhelper')();
 
 const userProfileScheduledJobs = function () {
+  const date = new Date();
+  date.setSeconds(date.getSeconds() + 2);
   const assignBlueBadge = new CronJob(
-    '0 0 * * 0',
+    date,
+    // '0 0 * * 0',
     userhelper.assignBlueBadgesForTimeNotMetOrSummaries,
     null,
     false,
     'America/Los_Angeles',
   );
 
-  const date = new Date();
-  date.setSeconds(date.getSeconds() + 2);
   const emailWeeklySummaries = new CronJob(
-    date,
-    // '5 0 * * 0', // Every Sunday, 5 minutes past midnight.
+    '5 0 * * 0', // Every Sunday, 5 minutes past midnight.
     userhelper.emailWeeklySummariesForAllUsers,
     null,
     false,
