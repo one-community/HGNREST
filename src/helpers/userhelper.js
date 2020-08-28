@@ -124,7 +124,7 @@ const userhelper = function () {
         });
 
         emailSender(
-          'onecommunityglobal@gmail.com',
+          'andon.ignatov@gmail.com',
           'Weekly Summaries for all active users...',
           emailBody,
           null,
@@ -220,9 +220,7 @@ const userhelper = function () {
           }
 
           //  This needs to run AFTER the check for weekly summary above because the summaries array will be updated/shifted after this function runs.
-          if (personId.equals('5ec95665c77af83f146f339b')) {
-            processWeeklySummariesByUserId(personId, hasWeeklySummary);
-          }
+          processWeeklySummariesByUserId(personId, hasWeeklySummary);
 
           dashboardhelper
             .laborthisweek(personId, pdtStartOfLastWeek, pdtEndOfLastWeek)
@@ -247,29 +245,27 @@ const userhelper = function () {
                   description,
                 };
 
-                if (personId.equals('5ec95665c77af83f146f339b')) {
-                  userProfile
-                    .findByIdAndUpdate(personId, {
-                      $push: {
-                        infringments: infringment,
-                      },
-                    }, { new: true })
-                    .then((status) => {
-                      emailSender(
-                        status.email,
-                        'New Infringment Assigned',
-                        getInfringmentEmailBody(
-                          status.firstName,
-                          status.lastName,
-                          infringment,
-                          status.infringments.length,
-                        ),
-                        null,
-                        'andon.ignatov@gmail.com',
-                      );
-                    })
-                    .catch(error => logger.logException(error));
-                }
+                userProfile
+                  .findByIdAndUpdate(personId, {
+                    $push: {
+                      infringments: infringment,
+                    },
+                  }, { new: true })
+                  .then((status) => {
+                    emailSender(
+                      status.email,
+                      'New Infringment Assigned',
+                      getInfringmentEmailBody(
+                        status.firstName,
+                        status.lastName,
+                        infringment,
+                        status.infringments.length,
+                      ),
+                      null,
+                      'onecommunityglobal@gmail.com',
+                    );
+                  })
+                  .catch(error => logger.logException(error));
               }
             })
             .catch(error => logger.logException(error));
