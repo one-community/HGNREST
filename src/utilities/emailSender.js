@@ -7,7 +7,7 @@ const emailSender = function (recipient, subject, message, cc = null, bcc = null
     const transporter = nodemailer.createTransport({
       host: process.env.SMTPDomain,
       port: process.env.SMTPPort,
-      secure: true,
+      secure: false,
       auth: {
         user: process.env.SMTPUser,
         pass: process.env.SMTPPass,
