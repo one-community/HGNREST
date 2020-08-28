@@ -124,7 +124,7 @@ const userhelper = function () {
         });
 
         emailSender(
-          'andon.ignatov@gmail.com',
+          'onecommunityglobal@gmail.com',
           'Weekly Summaries for all active users...',
           emailBody,
           null,
