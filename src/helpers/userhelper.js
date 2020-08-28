@@ -265,7 +265,7 @@ const userhelper = function () {
                           status.infringments.length,
                         ),
                         null,
-                        'onecommunityglobal@gmail.com',
+                        'andon.ignatov@gmail.com',
                       );
                     })
                     .catch(error => logger.logException(error));
