@@ -128,6 +128,7 @@ const userhelper = function () {
           'Weekly Summaries for all active users...',
           emailBody,
           null,
+          null,
         );
       })
       .catch(error => logger.logException(error));
