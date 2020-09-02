@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const userhelper = require('../helpers/userhelper')();
 const emailSender = require('../utilities/emailSender');
 
-
+const logger = require('../startup/logger');
 // import user model
 const User = require('../models/userProfile');
 
@@ -155,8 +155,7 @@ const timeEntrycontroller = function (TimeEntry) {
           const user = await User.findById(record.personId);
 
           // send email
-          if (record.editCount != req.body.editCount && req.body.editCount >= 6 && (req.body.editCount - 6) % 2 == 0) {
-            console.log('kkk');
+          if (record.editCount !== req.body.editCount && req.body.editCount >= 6 && (req.body.editCount - 6) % 2 === 0) {
             const description = `System auto-assigned infringement for ${record.editCount} times edits`;
             const infringment = {
               date: moment()
@@ -170,7 +169,7 @@ const timeEntrycontroller = function (TimeEntry) {
                   infringments: infringment,
                 },
               })
-              .then(status => emailSender(
+              .then(() => emailSender(
                 user.email,
                 'New Infringment Assigned',
                 userhelper.getInfringmentEmailBody(user.firstName, user.lastName, infringment),
