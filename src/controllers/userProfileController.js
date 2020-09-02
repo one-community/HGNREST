@@ -163,7 +163,7 @@ const userProfileController = function (UserProfile) {
         }
       }
 
-      // let requested_infringments = (req.body.infringments)? (req.body.infringments): [];
+      // let requested_infringments = (req.body.infringments)? (req.body.): [];
       const originalInfringments = record.infringments
         ? record.infringments
         : [];

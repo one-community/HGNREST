@@ -1,5 +1,11 @@
 const moment = require('moment-timezone');
 const mongoose = require('mongoose');
+const userhelper = require('../helpers/userhelper')();
+const emailSender = require('../utilities/emailSender');
+
+
+// import user model
+const User = require('../models/userProfile');
 
 const formatseconds = function (seconds) {
   const formattedseconds = parseInt(seconds, 10);
@@ -111,7 +117,7 @@ const timeEntrycontroller = function (TimeEntry) {
       .catch(error => res.status(400).send(error));
   };
 
-
+  // add async
   const editTimeEntry = function (req, res) {
     // Verify request body
 
@@ -128,7 +134,7 @@ const timeEntrycontroller = function (TimeEntry) {
     }
 
     TimeEntry.findById(req.params.timeEntryId)
-      .then((record) => {
+      .then(async (record) => {
         if (!record) {
           res.status(400).send({ error: `No valid records found for ${req.params.timeEntryId}` });
           return;
@@ -144,6 +150,36 @@ const timeEntrycontroller = function (TimeEntry) {
           record.notes = req.body.notes;
           record.totalSeconds = moment.duration(timeSpent).asSeconds();
           record.isTangible = req.body.isTangible;
+
+          // find user
+          const user = await User.findById(record.personId);
+
+          // send email
+          if (record.editCount != req.body.editCount && req.body.editCount >= 6 && (req.body.editCount - 6) % 2 == 0) {
+            console.log('kkk');
+            const description = `System auto-assigned infringement for ${record.editCount} times edits`;
+            const infringment = {
+              date: moment()
+                .utc()
+                .format('YYYY-MM-DD'),
+              description,
+            };
+            User
+              .findByIdAndUpdate(record.personId, {
+                $push: {
+                  infringments: infringment,
+                },
+              })
+              .then(status => emailSender(
+                user.email,
+                'New Infringment Assigned',
+                userhelper.getInfringmentEmailBody(user.firstName, user.lastName, infringment),
+                null,
+                'onecommunityglobal@gmail.com',
+              ))
+              .catch(error => logger.logException(error));
+          }
+
           record.editCount = req.body.editCount;
           record.lastModifiedDateTime = moment().utc().toISOString();
           record.projectId = mongoose.Types.ObjectId(req.body.projectId);
